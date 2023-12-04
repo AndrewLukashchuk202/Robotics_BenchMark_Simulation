@@ -2,6 +2,7 @@
 from controller import Robot
 from time import sleep
 
+
 class RobotMove():
     """
     This class controls a robot's movement in a square path in the Webots simulation environment.
@@ -24,7 +25,7 @@ class RobotMove():
         self.leftWheelSensor = self.robot.getPositionSensor('left wheel sensor')
         self.rightWheelSensor = self.robot.getPositionSensor('right wheel sensor')
         
-        #Refreshes the sensor every 1ms.
+        # Refreshes the sensor every 1ms.
         self.rightWheelSensor.enable(1)
         self.leftWheelSensor.enable(1)
         
@@ -37,10 +38,11 @@ class RobotMove():
 
         The square path consists of four straight segments and four right turns.
 
-        The speed of the robot can be controlled depending on the current supplied to the motors. So both wheels can have different speeds
-        the same time. robot.step() controls the number of steps taken by the robot, however the number of steps can also vary depending on
-        wheel speeds. By default, each square is 1000 steps of the robot, the number of wheel revolutions will always be 20 (right) ~ 23 (left) regardless
-        from the speed of the robot, which comes out to ~ 5 revolutions per square.
+        The speed of the robot can be controlled depending on the current supplied to the motors. So both wheels can
+        have different speeds the same time. robot.step() controls the number of steps taken by the robot, however the
+        number of steps can also vary depending on  wheel speeds. By default, each square is 1000 steps of the robot,
+        the number of wheel revolutions will always be 20 (right) ~ 23 (left) regardless from the speed of the robot,
+        which comes out to ~ 5 revolutions per square.
 
         """
         for i in range(0, 4):
@@ -56,7 +58,7 @@ class RobotMove():
                 self.turn_right(480)
                
             if i == 1:
-                #adjusting wheels every square
+                # adjusting wheels every square
                 self.move_forward(63)
                 self.adjust_wheels(-1.45, 1.45)
                 self.move_forward(63)
@@ -82,8 +84,7 @@ class RobotMove():
             if i == 3:
                  
                 self.move_forward(250)
-               
-            
+
     def move_forward(self, limit):
         """
         Makes the robot move forward for a specified number of steps.
@@ -98,8 +99,8 @@ class RobotMove():
         self.leftWheel.setPosition(1000)
         self.rightWheel.setPosition(1000)
         
-        #defines how many steps we do
-        #limit - 250 (full line)
+        # defines how many steps we do
+        # limit - 250 (full line)
         while (steps < limit):
             self.robot.step(1)
             steps += 1
@@ -116,21 +117,18 @@ class RobotMove():
         self.rightWheel.setPosition(-1000)
         
         self.robot.step(steps)
-        
-    
+
     def stop(self):
         """
         Stops the robot by setting both wheel velocities to 0.
-        
         """
         self.leftWheel.setVelocity(0)
         self.rightWheel.setVelocity(0)
         
-    def adjust_wheels(self, negValue, posValue):
-
+    def adjust_wheels(self, neg_value, pos_value):
         """
         Parameters:
-        isRight (bool): To check which wheel moves faster to stop it for a some period of time and then turn it back on
+        is_right (bool): To check which wheel moves faster to stop it for a some period of time and then turn it back on
         self.rightWheelSensor.getValue() (str): Gets the number of revolutions of the right wheel using the right sensor every 1 ms
         self.leftWheelSensor.getValue() (str): Gets the number of revolutions of the left wheel using the left sensor every 1 ms
         negValue (float): The negative threshold for the sensor difference.
@@ -140,25 +138,22 @@ class RobotMove():
         I square a cell. Based on this data, we adjust the position of the robot every cell of the square, turning off the left or right wheel by
         time until the robot takes from 7 to 15 steps (half a square or a whole square)
         """
-        isRight = False
-        if (self.rightWheelSensor.getValue() - self.leftWheelSensor.getValue() < negValue):
+        is_right = False
+        if (self.rightWheelSensor.getValue() - self.leftWheelSensor.getValue() < neg_value):
             self.leftWheel.setVelocity(0)
-            #half a square
+            # half a square
             self.robot.step(7)
-            isRight = True
-        elif (self.rightWheelSensor.getValue() - self.leftWheelSensor.getValue() > posValue):
+            is_right = True
+        elif (self.rightWheelSensor.getValue() - self.leftWheelSensor.getValue() > pos_value):
             self.rightWheel.setVelocity(0)
             self.robot.step(7)
 
-
-        
-        if isRight:
+        if is_right:
             self.leftWheel.setVelocity(5.2)
         else:
-            self.righttWheel.setVelocity(5.2)
+            self.rightWheel.setVelocity(5.2)
     
-        
-        
+
 robott = RobotMove()
 robott.square()
 robott.stop()
